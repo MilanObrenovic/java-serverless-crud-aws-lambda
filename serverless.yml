@@ -39,7 +39,7 @@ package:
 
 # Custom Lambda functions for the API
 functions:
-  hello:
+  base_api:
     handler: com.serverless.Handler
     events:
       - httpApi:

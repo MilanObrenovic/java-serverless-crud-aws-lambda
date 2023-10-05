@@ -22,11 +22,9 @@ frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: java8
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  runtime: java17
+  stage: development
+  region: eu-central-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
@@ -52,7 +50,7 @@ provider:
 
 # you can add packaging information here
 package:
-  artifact: build/distributions/hello.zip
+  artifact: build/distributions/java-serverless-crud-aws-lambda.zip
 
 functions:
   hello:

@@ -46,7 +46,14 @@ functions:
           path: /
           method: get
 
-# Resources      
+  author_registration:
+    handler: com.serverless.handler.RegistrationHandler
+    events:
+      - httpApi:
+          path: /authors/registration
+          method: post
+
+# Resources
 resources:
   Resources:
     AuthorDynamoDBTable:

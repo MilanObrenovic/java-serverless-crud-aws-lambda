@@ -6,17 +6,18 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 17
+targetCompatibility = 17
 
 dependencies {
     api (
-        "com.amazonaws:aws-lambda-java-core:1.2.1",
+        "com.amazonaws:aws-lambda-java-core:1.2.3",
         "com.amazonaws:aws-lambda-java-log4j:1.0.1",
-        "com.fasterxml.jackson.core:jackson-core:2.11.0",
-        "com.fasterxml.jackson.core:jackson-databind:2.11.0",
-        "com.fasterxml.jackson.core:jackson-annotations:2.11.0",
-        "org.projectlombok:lombok:1.18.26"
+        "com.amazonaws:aws-java-sdk-dynamodb:1.12.562",
+        "com.fasterxml.jackson.core:jackson-core:2.15.2",
+        "com.fasterxml.jackson.core:jackson-databind:2.15.2",
+        "com.fasterxml.jackson.core:jackson-annotations:2.15.2",
+        "org.projectlombok:lombok:1.18.26",
     )
 }
 

@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    id "java-library"
 }
 
 repositories {
@@ -11,11 +11,12 @@ targetCompatibility = 1.8
 
 dependencies {
     api (
-        'com.amazonaws:aws-lambda-java-core:1.2.1',
-        'com.amazonaws:aws-lambda-java-log4j:1.0.1',
-        'com.fasterxml.jackson.core:jackson-core:2.11.0',
-        'com.fasterxml.jackson.core:jackson-databind:2.11.0',
-        'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
+        "com.amazonaws:aws-lambda-java-core:1.2.1",
+        "com.amazonaws:aws-lambda-java-log4j:1.0.1",
+        "com.fasterxml.jackson.core:jackson-core:2.11.0",
+        "com.fasterxml.jackson.core:jackson-databind:2.11.0",
+        "com.fasterxml.jackson.core:jackson-annotations:2.11.0",
+        "org.projectlombok:lombok:1.18.26"
     )
 }
 
@@ -28,11 +29,10 @@ task buildZip(type: Zip) {
     //
     // Link: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Zip.html
 
-    // set the base name of the zip file
     archiveBaseName = "java-serverless-crud-aws-lambda"
     from compileJava
     from processResources
-    into('lib') {
+    into("lib") {
         from configurations.runtimeClasspath
     }
 }

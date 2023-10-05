@@ -53,6 +53,13 @@ functions:
           path: /authors/registration
           method: post
 
+  author_reads:
+    handler: com.serverless.handler.ReadHandler
+    events:
+      - httpApi:
+          path: /authors
+          method: get
+
 # Resources
 resources:
   Resources:

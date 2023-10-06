@@ -1,0 +1,178 @@
+{
+  "info": {
+    "_postman_id": "ff493647-8b0e-4460-b71e-47ac98e500c3",
+    "name": "spring-boot-serverless-crud-aws-lambda",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9274375"
+  },
+  "item": [
+    {
+      "name": "authors",
+      "item": [
+        {
+          "name": "/api/v1/authors",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"identification_number\": \"{{$guid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/authors",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "authors"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/v1/authors?find-all=true",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/authors?find-all=true",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "authors"
+              ],
+              "query": [
+                {
+                  "key": "find-all",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/v1/authors?id={authorId:string}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/authors?id=02a6a8ad-e436-407a-8408-52174f0dd57b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "authors"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "02a6a8ad-e436-407a-8408-52174f0dd57b"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/v1/authors/{authorId:string}",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"identification_number\": \"{{$guid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/authors/02a6a8ad-e436-407a-8408-52174f0dd57b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "authors",
+                "02a6a8ad-e436-407a-8408-52174f0dd57b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/v1/authors/{authorId:string}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"identification_number\": \"{{$guid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/authors/02a6a8ad-e436-407a-8408-52174f0dd57b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "authors",
+                "02a6a8ad-e436-407a-8408-52174f0dd57b"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base-url",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

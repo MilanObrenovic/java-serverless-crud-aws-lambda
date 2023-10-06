@@ -1,8 +1,5 @@
 package com.serverless.handler;
 
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -10,6 +7,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.serverless.ApiGatewayResponse;
 import com.serverless.dto.AuthorDTO;
 import com.serverless.dto.response.CommonResponseDTO;
+import com.serverless.util.DynamoDBClientUtil;
 import com.serverless.util.RequestConversionUtil;
 
 import java.util.Collections;
@@ -17,12 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.serverless.constant.AwsConstants.AUTHOR_DB_TABLE;
+
 public class PostHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
-
-    private final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
-    private final Regions REGION = Regions.fromName(System.getenv("REGION"));
-
-    private AmazonDynamoDB amazonDynamoDB;
 
     @Override
     public ApiGatewayResponse handleRequest(
@@ -30,13 +25,11 @@ public class PostHandler implements RequestHandler<Map<String, Object>, ApiGatew
             Context context
     ) {
         RequestConversionUtil requestConversionUtil = new RequestConversionUtil();
-
         AuthorDTO authorDTO = requestConversionUtil.parseRequestBody(
                 request.get("body").toString(),
                 AuthorDTO.class
         );
 
-        initDynamoDBClient();
         persistData(authorDTO);
 
         return ApiGatewayResponse
@@ -57,14 +50,10 @@ public class PostHandler implements RequestHandler<Map<String, Object>, ApiGatew
         attributesMap.put("last_name", new AttributeValue(authorDTO.getLastName()));
         attributesMap.put("email", new AttributeValue(authorDTO.getEmail()));
         attributesMap.put("identification_number", new AttributeValue(authorDTO.getIdentificationNumber()));
-        amazonDynamoDB.putItem(AUTHOR_DB_TABLE, attributesMap);
-    }
 
-    private void initDynamoDBClient() {
-        amazonDynamoDB = AmazonDynamoDBClientBuilder
-                .standard()
-                .withRegion(REGION)
-                .build();
+        DynamoDBClientUtil
+                .amazonDynamoDB()
+                .putItem(AUTHOR_DB_TABLE, attributesMap);
     }
 
 }

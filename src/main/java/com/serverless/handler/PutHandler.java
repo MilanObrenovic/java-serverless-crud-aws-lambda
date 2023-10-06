@@ -1,8 +1,5 @@
 package com.serverless.handler;
 
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -10,24 +7,20 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.ApiGatewayResponse;
 import com.serverless.dto.AuthorDTO;
 import com.serverless.dto.response.CommonResponseDTO;
+import com.serverless.util.DynamoDBClientUtil;
 import com.serverless.util.RequestConversionUtil;
 
 import java.util.*;
 
+import static com.serverless.constant.AwsConstants.AUTHOR_DB_TABLE;
+
 public class PutHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
-
-    private final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
-    private final Regions REGION = Regions.fromName(System.getenv("REGION"));
-
-    private AmazonDynamoDB amazonDynamoDB;
 
     @Override
     public ApiGatewayResponse handleRequest(
             APIGatewayProxyRequestEvent request,
             Context context
     ) {
-        initDynamoDBClient();
-
         String authorId = request.getPathParameters().get("authorId");
         RequestConversionUtil requestConversionUtil = new RequestConversionUtil();
         AuthorDTO authorDTO = requestConversionUtil.parseRequestBody(
@@ -55,7 +48,9 @@ public class PutHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
                         updateAuthorMap
                 );
 
-        amazonDynamoDB.updateItem(updateItemRequest);
+        DynamoDBClientUtil
+                .amazonDynamoDB()
+                .updateItem(updateItemRequest);
 
         return ApiGatewayResponse
                 .builder()
@@ -77,13 +72,6 @@ public class PutHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
                 attributeValue,
                 AttributeAction.PUT
         );
-    }
-
-    private void initDynamoDBClient() {
-        amazonDynamoDB = AmazonDynamoDBClientBuilder
-                .standard()
-                .withRegion(REGION)
-                .build();
     }
 
 }

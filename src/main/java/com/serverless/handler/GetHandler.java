@@ -1,8 +1,5 @@
 package com.serverless.handler;
 
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -10,23 +7,19 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.ApiGatewayResponse;
 import com.serverless.dto.AuthorDTO;
 import com.serverless.dto.response.CommonResponseDTO;
+import com.serverless.util.DynamoDBClientUtil;
 
 import java.util.*;
 
+import static com.serverless.constant.AwsConstants.AUTHOR_DB_TABLE;
+
 public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
-
-    private final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
-    private final Regions REGION = Regions.fromName(System.getenv("REGION"));
-
-    private AmazonDynamoDB amazonDynamoDB;
 
     @Override
     public ApiGatewayResponse handleRequest(
             APIGatewayProxyRequestEvent request,
             Context context
     ) {
-        initDynamoDBClient();
-
         Map<String, String> queryParams = request.getQueryStringParameters();
 
         if (queryParams != null &&
@@ -43,7 +36,9 @@ public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
                         .withLimit(10)
                         .withExclusiveStartKey(lastKeyEvaluated);
 
-                ScanResult scanResult = amazonDynamoDB.scan(scanRequest);
+                ScanResult scanResult = DynamoDBClientUtil
+                        .amazonDynamoDB()
+                        .scan(scanRequest);
 
                 for (Map<String, AttributeValue> item : scanResult.getItems()) {
                     authorDTOS.add(mapToDTO(item));
@@ -70,7 +65,8 @@ public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
                     .withTableName(AUTHOR_DB_TABLE)
                     .withKey(attributesMap);
 
-            GetItemResult itemResult = amazonDynamoDB
+            GetItemResult itemResult = DynamoDBClientUtil
+                    .amazonDynamoDB()
                     .getItem(itemRequest);
 
             if (!itemResult.getItem().isEmpty()) {
@@ -99,13 +95,6 @@ public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
         authorDTO.setLastName(item.get("last_name").getS());
         authorDTO.setIdentificationNumber(item.get("identification_number").getS());
         return authorDTO;
-    }
-
-    private void initDynamoDBClient() {
-        amazonDynamoDB = AmazonDynamoDBClientBuilder
-                .standard()
-                .withRegion(REGION)
-                .build();
     }
 
 }

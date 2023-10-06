@@ -30,8 +30,8 @@ public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
         Map<String, String> queryParams = request.getQueryStringParameters();
 
         if (queryParams != null &&
-                queryParams.containsKey("findAll") &&
-                Boolean.parseBoolean(queryParams.get("findAll"))) {
+                queryParams.containsKey("find-all") &&
+                Boolean.parseBoolean(queryParams.get("find-all"))) {
 
             // Find all
             Map<String, AttributeValue> lastKeyEvaluated = null;
@@ -73,19 +73,21 @@ public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
             GetItemResult itemResult = amazonDynamoDB
                     .getItem(itemRequest);
 
-            return ApiGatewayResponse
-                    .builder()
-                    .setStatusCode(200)
-                    .setHeaders(Collections.singletonMap("Content-Type", "application/json"))
-                    .setObjectBody(mapToDTO(itemResult.getItem()))
-                    .build();
+            if (!itemResult.getItem().isEmpty()) {
+                return ApiGatewayResponse
+                        .builder()
+                        .setStatusCode(200)
+                        .setHeaders(Collections.singletonMap("Content-Type", "application/json"))
+                        .setObjectBody(mapToDTO(itemResult.getItem()))
+                        .build();
+            }
         }
 
         return ApiGatewayResponse
                 .builder()
-                .setStatusCode(200)
+                .setStatusCode(404)
                 .setHeaders(Collections.singletonMap("Content-Type", "application/json"))
-                .setObjectBody(new CommonResponseDTO("No data found under given query."))
+                .setObjectBody(new CommonResponseDTO("Author not found."))
                 .build();
     }
 

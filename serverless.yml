@@ -75,3 +75,10 @@ functions:
       - httpApi:
           path: /api/v1/authors
           method: get
+
+  author_put:
+    handler: com.serverless.handler.PutHandler
+    events:
+      - httpApi:
+          path: /api/v1/authors/{authorId}
+          method: put

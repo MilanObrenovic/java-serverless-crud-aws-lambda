@@ -11,7 +11,6 @@ import com.serverless.ApiGatewayResponse;
 import com.serverless.dto.AuthorDTO;
 import com.serverless.dto.response.CommonResponseDTO;
 import com.serverless.util.RequestConversionUtil;
-import org.apache.log4j.Logger;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.UUID;
 
 public class PostHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
-    private final Logger LOG = Logger.getLogger(PostHandler.class);
     private final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
     private final Regions REGION = Regions.fromName(System.getenv("REGION"));
 
@@ -37,8 +35,6 @@ public class PostHandler implements RequestHandler<Map<String, Object>, ApiGatew
                 request.get("body").toString(),
                 AuthorDTO.class
         );
-
-        LOG.info("Incoming author registration request " + authorDTO);
 
         initDynamoDBClient();
         persistData(authorDTO);

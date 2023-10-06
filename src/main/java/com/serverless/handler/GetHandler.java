@@ -10,26 +10,24 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.ApiGatewayResponse;
 import com.serverless.dto.AuthorDTO;
 import com.serverless.dto.response.CommonResponseDTO;
-import lombok.AllArgsConstructor;
 
 import java.util.*;
 
-@AllArgsConstructor
-public class ReadHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
 
-    private static final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
-    private static final Regions REGION = Regions.fromName(System.getenv("REGION"));
+    private final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
+    private final Regions REGION = Regions.fromName(System.getenv("REGION"));
 
     private AmazonDynamoDB amazonDynamoDB;
 
     @Override
     public ApiGatewayResponse handleRequest(
-            APIGatewayProxyRequestEvent input,
+            APIGatewayProxyRequestEvent request,
             Context context
     ) {
         initDynamoDBClient();
 
-        Map<String, String> queryParams = input.getQueryStringParameters();
+        Map<String, String> queryParams = request.getQueryStringParameters();
 
         if (queryParams != null &&
                 queryParams.containsKey("findAll") &&

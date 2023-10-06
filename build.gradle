@@ -2,35 +2,36 @@ plugins {
     id "java-library"
 }
 
+java {
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
+}
+
 repositories {
     mavenCentral()
 }
-
-sourceCompatibility = 17
-targetCompatibility = 17
 
 dependencies {
     api (
         "com.amazonaws:aws-lambda-java-core:1.2.3",
         "com.amazonaws:aws-lambda-java-log4j:1.0.1",
+        "com.amazonaws:aws-java-sdk-s3:1.12.562",
+        "com.amazonaws:aws-java-sdk-core:1.12.562",
         "com.amazonaws:aws-java-sdk-dynamodb:1.12.562",
         "com.amazonaws:aws-lambda-java-events:3.11.3",
         "com.fasterxml.jackson.core:jackson-core:2.15.2",
         "com.fasterxml.jackson.core:jackson-databind:2.15.2",
         "com.fasterxml.jackson.core:jackson-annotations:2.15.2",
-        "org.projectlombok:lombok:1.18.26",
     )
+
+    // Compile only
+    compileOnly "org.projectlombok:lombok:1.18.30"
+
+    // Annotation processors
+    annotationProcessor "org.projectlombok:lombok:1.18.30"
 }
 
-// Task for building the zip file for upload
-task buildZip(type: Zip) {
-    // Using the Zip API from gradle to build a zip file of all the dependencies
-    //
-    // The path to this zip file can be set in the serverless.yml file for the
-    // package/artifact setting for deployment to the S3 bucket
-    //
-    // Link: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Zip.html
-
+tasks.register("buildZip", Zip) {
     archiveBaseName = "java-serverless-crud-aws-lambda"
     from compileJava
     from processResources

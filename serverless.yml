@@ -1,17 +1,14 @@
 service: java-serverless-crud-aws-lambda
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
+app: java-serverless-crud-aws-lambda
+org: milanobrenovic
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
 frameworkVersion: "3"
 
 # Cloud configuration
 provider:
   name: aws
   runtime: java17
-  stage: development
+  stage: dev
   region: eu-central-1
 
   # Environment variables
@@ -20,45 +17,24 @@ provider:
     AUTHOR_TABLE: author-${opt:stage, self:provider.stage}
 
   # IAM roles to access DynamoDB tables
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:BatchGetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        - !GetAtt AuthorDynamoDBTable.Arn
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:BatchGetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource:
+          - !GetAtt AuthorDynamoDBTable.Arn
 
 # Packaging information
 package:
   artifact: build/distributions/java-serverless-crud-aws-lambda.zip
-
-# Custom Lambda functions for the API
-functions:
-  base_api:
-    handler: com.serverless.Handler
-    events:
-      - httpApi:
-          path: /
-          method: get
-
-  author_registration:
-    handler: com.serverless.handler.RegistrationHandler
-    events:
-      - httpApi:
-          path: /authors/registration
-          method: post
-
-  author_reads:
-    handler: com.serverless.handler.ReadHandler
-    events:
-      - httpApi:
-          path: /authors
-          method: get
 
 # Resources
 resources:
@@ -76,3 +52,26 @@ resources:
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
         TableName: ${self:provider.environment.AUTHOR_TABLE}
+
+# Custom Lambda functions for the API
+functions:
+  base_api:
+    handler: com.serverless.Handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  author_create:
+    handler: com.serverless.handler.PostHandler
+    events:
+      - httpApi:
+          path: /api/v1/authors
+          method: post
+
+  author_get:
+    handler: com.serverless.handler.GetHandler
+    events:
+      - httpApi:
+          path: /api/v1/authors
+          method: get

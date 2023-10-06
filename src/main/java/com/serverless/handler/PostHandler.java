@@ -11,7 +11,6 @@ import com.serverless.ApiGatewayResponse;
 import com.serverless.dto.AuthorDTO;
 import com.serverless.dto.response.CommonResponseDTO;
 import com.serverless.util.RequestConversionUtil;
-import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 
 import java.util.Collections;
@@ -19,24 +18,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@AllArgsConstructor
-public class RegistrationHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
+public class PostHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
-    private static final Logger LOG = Logger.getLogger(RegistrationHandler.class);
-    private static final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
-    private static final Regions REGION = Regions.fromName(System.getenv("REGION"));
+    private final Logger LOG = Logger.getLogger(PostHandler.class);
+    private final String AUTHOR_DB_TABLE = System.getenv("AUTHOR_TABLE");
+    private final Regions REGION = Regions.fromName(System.getenv("REGION"));
 
     private AmazonDynamoDB amazonDynamoDB;
 
     @Override
     public ApiGatewayResponse handleRequest(
-            Map<String, Object> input,
+            Map<String, Object> request,
             Context context
     ) {
         RequestConversionUtil requestConversionUtil = new RequestConversionUtil();
 
         AuthorDTO authorDTO = requestConversionUtil.parseRequestBody(
-                input.get("body").toString(),
+                request.get("body").toString(),
                 AuthorDTO.class
         );
 
@@ -53,7 +51,7 @@ public class RegistrationHandler implements RequestHandler<Map<String, Object>, 
                 .build();
     }
 
-    private String persistData(
+    private void persistData(
             AuthorDTO authorDTO
     ) throws ConditionalCheckFailedException {
         String userId = UUID.randomUUID().toString();
@@ -64,7 +62,6 @@ public class RegistrationHandler implements RequestHandler<Map<String, Object>, 
         attributesMap.put("email", new AttributeValue(authorDTO.getEmail()));
         attributesMap.put("identification_number", new AttributeValue(authorDTO.getIdentificationNumber()));
         amazonDynamoDB.putItem(AUTHOR_DB_TABLE, attributesMap);
-        return userId;
     }
 
     private void initDynamoDBClient() {

@@ -5,23 +5,41 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ApiGatewayResponse {
 
-	private int statusCode;
-	private String body;
-	private Map<String, String> headers;
-	private boolean isBase64Encoded;
+	private final int statusCode;
+	private final String body;
+	private final Map<String, String> headers;
+	private final boolean isBase64Encoded;
+
+	public ApiGatewayResponse(int statusCode, String body, Map<String, String> headers, boolean isBase64Encoded) {
+		this.statusCode = statusCode;
+		this.body = body;
+		this.headers = headers;
+		this.isBase64Encoded = isBase64Encoded;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	// API Gateway expects the property to be called "isBase64Encoded" => isIs
+	public boolean isIsBase64Encoded() {
+		return isBase64Encoded;
+	}
 
 	public static Builder builder() {
 		return new Builder();
@@ -108,4 +126,5 @@ public class ApiGatewayResponse {
 			return new ApiGatewayResponse(statusCode, body, headers, base64Encoded);
 		}
 	}
+
 }

@@ -1,6 +1,4 @@
 service: java-serverless-crud-aws-lambda
-app: java-serverless-crud-aws-lambda
-org: milanobrenovic
 
 frameworkVersion: "3"
 

@@ -1,7 +1,12 @@
 package com.serverless.handler;
 
-import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
+import com.amazonaws.services.dynamodbv2.model.GetItemResult;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.ApiGatewayResponse;
@@ -20,6 +25,9 @@ public class GetHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
             APIGatewayProxyRequestEvent request,
             Context context
     ) {
+        LambdaLogger logger = context.getLogger();
+        logger.log("received: " + request.toString());
+
         Map<String, String> queryParams = request.getQueryStringParameters();
 
         if (queryParams != null &&

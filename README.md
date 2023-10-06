@@ -32,7 +32,7 @@ Or
 sls deploy
 ```
 
-3. Test the API
+# 3. Test the API
 
 Here is the example API to test all CRUD operations:
 

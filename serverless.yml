@@ -82,3 +82,10 @@ functions:
       - httpApi:
           path: /api/v1/authors/{authorId}
           method: put
+
+  author_delete:
+    handler: com.serverless.handler.DeleteHandler
+    events:
+      - httpApi:
+          path: /api/v1/authors/{authorId}
+          method: delete

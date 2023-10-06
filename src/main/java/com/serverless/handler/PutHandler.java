@@ -28,39 +28,31 @@ public class PutHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
     ) {
         initDynamoDBClient();
 
+        String authorId = request.getPathParameters().get("authorId");
         RequestConversionUtil requestConversionUtil = new RequestConversionUtil();
         AuthorDTO authorDTO = requestConversionUtil.parseRequestBody(
                 request.getBody(),
                 AuthorDTO.class
         );
 
-        AttributeValue authorIdAttributeValue = new AttributeValue(
-                request.getPathParameters().get("authorId")
-        );
+        Map<String, AttributeValue> authorIdMap = new HashMap<>();
+        authorIdMap.put("id", attributeValue(authorId));
+
+        Map<String, AttributeValueUpdate> updateAuthorMap = new HashMap<>();
+        updateAuthorMap.put("first_name", attributeValueUpdate(authorDTO.getFirstName()));
+        updateAuthorMap.put("last_name", attributeValueUpdate(authorDTO.getLastName()));
+        updateAuthorMap.put("email", attributeValueUpdate(authorDTO.getEmail()));
+        updateAuthorMap.put("identification_number", attributeValueUpdate(authorDTO.getIdentificationNumber()));
 
         UpdateItemRequest updateItemRequest = new UpdateItemRequest()
                 .withTableName(
                         AUTHOR_DB_TABLE
                 )
-                .addKeyEntry(
-                        "id",
-                        authorIdAttributeValue
+                .withKey(
+                        authorIdMap
                 )
-                .addAttributeUpdatesEntry(
-                        "first_name",
-                        updateField(authorDTO.getFirstName())
-                )
-                .addAttributeUpdatesEntry(
-                        "last_name",
-                        updateField(authorDTO.getLastName())
-                )
-                .addAttributeUpdatesEntry(
-                        "email",
-                        updateField(authorDTO.getEmail())
-                )
-                .addAttributeUpdatesEntry(
-                        "identification_number",
-                        updateField(authorDTO.getIdentificationNumber())
+                .withAttributeUpdates(
+                        updateAuthorMap
                 );
 
         amazonDynamoDB.updateItem(updateItemRequest);
@@ -73,10 +65,14 @@ public class PutHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
                 .build();
     }
 
-    private AttributeValueUpdate updateField(String value) {
-        AttributeValue attributeValue = new AttributeValue(
+    private AttributeValue attributeValue(String value) {
+        return new AttributeValue(
                 value
         );
+    }
+
+    private AttributeValueUpdate attributeValueUpdate(String value) {
+        AttributeValue attributeValue = attributeValue(value);
         return new AttributeValueUpdate(
                 attributeValue,
                 AttributeAction.PUT
